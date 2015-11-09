@@ -315,14 +315,17 @@ public class SCrypt {
     }
 
     public static String scrypt(String passwd, String salts) {
+        int N=16;
+        int r=16;
+        int p=16;
+        int keylen=32;
+        return scrypt(passwd, salts, N, p, r, keylen);
+    }
+    public static String scrypt(String passwd, String salts, int N, int r, int p, int keylen) {
         try {
-            int N = 16;
-            int r=16;
-            int p=16;
             byte[] salt = salts.getBytes();
 
-            byte[] derived = SCrypt.scrypt(passwd.getBytes("utf-8"), salt, N, r, p, 32);
-            //return new String(derived, "hex");
+            byte[] derived = SCrypt.scrypt(passwd.getBytes("utf-8"), salt, N, r, p, keylen);
             return byteArrayToHex(derived);
             /*
             String params = Long.toString(log2(N) << 16L | r << 8 | p, 16);

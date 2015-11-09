@@ -1,5 +1,6 @@
 package org.chozabu.pypocketpass;
 
+import android.renderscript.Script;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.math.BigInteger;
+import java.security.MessageDigest;
 
 
 /**
@@ -73,12 +75,25 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
      * Generates a password from inputs
      */
     private void attemptLogin() {
-        String text = mPasswordView.getText().toString();
-        String site = mEmailView.getText().toString();
-        String shash = SCrypt.scrypt(text, site);
+        String masterPassword = mPasswordView.getText().toString();
+        String siteName = mEmailView.getText().toString();
+
+        String key = masterPassword.concat(siteName);
+        byte[] shahash;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            shahash = digest.digest(key.getBytes("UTF-8"));
+        } catch (Exception e) {
+            mPassOutView.setText("sorry, sha not supported!");
+            return;
+        }
+        key = SCrypt.byteArrayToHex(shahash);
+        String salt = "q3*V!jAre*kF8p5TPxXWQxQs$HTtdn@&dWSzTqwYBn$TF".concat(lessFrequentButStillAutoSuggestableWordsStr).concat(key);
+
+        String shash = SCrypt.scrypt(key, salt, 128, 16, 1, 64);
         String result = "";
-        result = result.concat(shash);
-        result = result.concat("\n");
+        result = result.concat(shash);//testing output
+        result = result.concat("\n");//testing output
 
         int desired_word_count = 5;
         int chunklen = shash.length() / desired_word_count;
@@ -86,7 +101,8 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
         int ival = 0;
         for (int i = 0; i < desired_word_count; i++) {
             String chunk = shash.substring(i * chunklen, (i + 1) * chunklen);
-            ival = (int)(Long.parseLong(chunk, 16) % lessFrequentButStillAutoSuggestableWords.length);
+            ival =  new BigInteger(chunk, 16).mod(BigInteger.valueOf(lessFrequentButStillAutoSuggestableWords.length)).intValue();
+            //ival = (int)(Long.parseLong(chunk, 16) % lessFrequentButStillAutoSuggestableWords.length);
             result = result.concat(lessFrequentButStillAutoSuggestableWords[ival]);
             result = result.concat(".");
         }
