@@ -69,7 +69,6 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
 
 
 
-
     /**
      * Generates a password from inputs
      */
@@ -78,6 +77,8 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
         String site = mEmailView.getText().toString();
         String shash = SCrypt.scrypt(text, site);
         String result = "";
+        result = result.concat(shash);
+        result = result.concat("\n");
 
         int desired_word_count = 5;
         int chunklen = shash.length() / desired_word_count;
@@ -85,8 +86,8 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
         int ival = 0;
         for (int i = 0; i < desired_word_count; i++) {
             String chunk = shash.substring(i * chunklen, (i + 1) * chunklen);
-            ival = new BigInteger(chunk.getBytes()).intValue();
-            result = result.concat(lessFrequentButStillAutoSuggestableWords[ival % lessFrequentButStillAutoSuggestableWords.length]);
+            ival = (int)(Long.parseLong(chunk, 16) % lessFrequentButStillAutoSuggestableWords.length);
+            result = result.concat(lessFrequentButStillAutoSuggestableWords[ival]);
             result = result.concat(".");
         }
         result = result.concat(Integer.toString(ival));

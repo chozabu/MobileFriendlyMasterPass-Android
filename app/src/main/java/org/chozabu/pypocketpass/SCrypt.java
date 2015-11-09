@@ -306,6 +306,14 @@ public class SCrypt {
         }
     }
 
+    //slow but short and clear answer from http://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
+    public static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for(byte b: a)
+            sb.append(String.format("%02x", b & 0xff));
+        return sb.toString();
+    }
+
     public static String scrypt(String passwd, String salts) {
         try {
             int N = 16;
@@ -313,8 +321,10 @@ public class SCrypt {
             int p=16;
             byte[] salt = salts.getBytes();
 
-            byte[] derived = SCrypt.scrypt(passwd.getBytes("UTF-8"), salt, N, r, p, 32);
-
+            byte[] derived = SCrypt.scrypt(passwd.getBytes("utf-8"), salt, N, r, p, 32);
+            //return new String(derived, "hex");
+            return byteArrayToHex(derived);
+            /*
             String params = Long.toString(log2(N) << 16L | r << 8 | p, 16);
 
             StringBuilder sb = new StringBuilder((salt.length + derived.length) * 2);
@@ -322,7 +332,7 @@ public class SCrypt {
             sb.append(Base64.encodeToString(salt, Base64.NO_WRAP)).append('$');
             sb.append(Base64.encodeToString(derived, Base64.NO_WRAP));
 
-            return sb.toString();
+            return sb.toString();*/
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("JVM doesn't support UTF-8?");
         } catch (GeneralSecurityException e) {
