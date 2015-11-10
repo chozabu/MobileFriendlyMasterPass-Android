@@ -12,6 +12,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.view.inputmethod.InputMethodManager;
+import android.content.Context;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -105,6 +107,13 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
         }
         result = result.concat(Integer.toString(ival));
         mPassOutView.setText(result);
+
+        //hide keyboard
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 }
