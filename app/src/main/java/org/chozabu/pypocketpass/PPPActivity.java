@@ -15,6 +15,9 @@ import android.widget.TextView;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.widget.TextView.OnEditorActionListener;
+import android.content.ClipboardManager;
+import android.content.ClipData;
+import android.widget.Toast;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -82,6 +85,28 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
                 return false;
             }
         });
+
+
+
+
+        Button mCopyButton = (Button) findViewById(R.id.copy_button);
+        mCopyButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("genpass", mPassOutView.getText());
+                clipboard.setPrimaryClip(clip);
+
+                Context context = getApplicationContext();
+                CharSequence text = "Copied to Clipboard, long press to paste";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        });
+
+
 
     }
 

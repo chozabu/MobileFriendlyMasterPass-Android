@@ -49,8 +49,16 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/passOut"
-                android:editable="true"
-                android:text="output" />
+                android:editable="false"
+                android:hint="Output"
+                android:textIsSelectable="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Copy Password"
+                android:id="@+id/copy_button"
+                android:layout_gravity="center_horizontal" />
 
         </LinearLayout>
     </ScrollView>
