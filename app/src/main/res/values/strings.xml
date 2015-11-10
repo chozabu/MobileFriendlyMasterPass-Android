@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PyPocketPass</string>
+    <string name="app_name">Mobile Friendly Master Pass</string>
     
     <!-- Strings related to login -->
     <string name="prompt_email">WebSite</string>
