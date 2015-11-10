@@ -92,8 +92,6 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
 
         String shash = SCrypt.scrypt(key, salt, 128, 16, 1, 64);
         String result = "";
-        result = result.concat(shash);//testing output
-        result = result.concat("\n");//testing output
 
         int desired_word_count = 5;
         int chunklen = shash.length() / desired_word_count;
@@ -102,7 +100,6 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
         for (int i = 0; i < desired_word_count; i++) {
             String chunk = shash.substring(i * chunklen, (i + 1) * chunklen);
             ival =  new BigInteger(chunk, 16).mod(BigInteger.valueOf(lessFrequentButStillAutoSuggestableWords.length)).intValue();
-            //ival = (int)(Long.parseLong(chunk, 16) % lessFrequentButStillAutoSuggestableWords.length);
             result = result.concat(lessFrequentButStillAutoSuggestableWords[ival]);
             result = result.concat(".");
         }
