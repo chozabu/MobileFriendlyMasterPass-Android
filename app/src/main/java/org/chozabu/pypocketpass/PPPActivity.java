@@ -110,25 +110,31 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
 
     }
 
+    private String sha256hex(String input){
+        byte[] shahash;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            shahash = digest.digest(input.getBytes("UTF-8"));
+        } catch (Exception e) {
+            mPassOutView.setText("sorry, sha not supported!");
+            mPasswordView.setText("sorry, sha not supported!");
+            mEmailView.setText("sorry, sha not supported!");
+            return "error";
+        }
+        return SCrypt.byteArrayToHex(shahash);
 
+    }
 
     /**
      * Generates a password from inputs
      */
     private void attemptLogin() {
         String masterPassword = mPasswordView.getText().toString();
-        String siteName = mEmailView.getText().toString().toLowerCase().replaceAll("\\s+","");
+        String siteName = mEmailView.getText().toString().toLowerCase().replaceAll("\\s+", "");
+        mEmailView.setText(siteName);
 
         String key = masterPassword.concat(siteName);
-        byte[] shahash;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            shahash = digest.digest(key.getBytes("UTF-8"));
-        } catch (Exception e) {
-            mPassOutView.setText("sorry, sha not supported!");
-            return;
-        }
-        key = SCrypt.byteArrayToHex(shahash);
+        key = sha256hex(key);
         String salt = "q3*V!jAre*kF8p5TPxXWQxQs$HTtdn@&dWSzTqwYBn$TF".concat(lessFrequentButStillAutoSuggestableWordsStr).concat(key);
 
         String shash = SCrypt.scrypt(key, salt, 128, 16, 1, 64);
