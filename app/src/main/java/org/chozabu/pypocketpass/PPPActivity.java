@@ -117,7 +117,7 @@ public class PPPActivity extends AppCompatActivity { //implements LoaderCallback
      */
     private void attemptLogin() {
         String masterPassword = mPasswordView.getText().toString();
-        String siteName = mEmailView.getText().toString();
+        String siteName = mEmailView.getText().toString().toLowerCase().replaceAll("\\s+","");
 
         String key = masterPassword.concat(siteName);
         byte[] shahash;
